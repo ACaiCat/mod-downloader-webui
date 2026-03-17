@@ -44,6 +44,60 @@ function formatBytes(bytes) {
   return `${val.toFixed(i === 0 ? 0 : 2)} ${units[i]}`
 }
 
+const URL_REGEX = /https?:\/\/[^\s)）]+/g
+
+function appendTextWithLineBreaks(parts, text, keyPrefix) {
+  const lines = text.split('\n')
+
+  lines.forEach((line, index) => {
+    if (line) {
+      parts.push(line)
+    }
+
+    if (index < lines.length - 1) {
+      parts.push(<br key={`${keyPrefix}-${index}`} />)
+    }
+  })
+}
+
+function renderTextWithLinks(text) {
+  const matches = [...text.matchAll(URL_REGEX)]
+
+  if (!matches.length) {
+    if (!text.includes('\n')) return text
+
+    const parts = []
+    appendTextWithLineBreaks(parts, text, 'line-break')
+    return parts
+  }
+
+  const parts = []
+  let lastIndex = 0
+
+  matches.forEach((match, index) => {
+    const [url] = match
+    const start = match.index ?? 0
+
+    if (start > lastIndex) {
+      appendTextWithLineBreaks(parts, text.slice(lastIndex, start), `text-${index}`)
+    }
+
+    parts.push(
+      <a key={`${url}-${index}`} href={url} target="_blank" rel="noreferrer">
+        {url}
+      </a>
+    )
+
+    lastIndex = start + url.length
+  })
+
+  if (lastIndex < text.length) {
+    appendTextWithLineBreaks(parts, text.slice(lastIndex), 'text-tail')
+  }
+
+  return parts
+}
+
 export default function Home() {
   const { t } = useI18n()
 
@@ -216,7 +270,7 @@ export default function Home() {
         </h3>
         <ol className="home__usage-steps">
           {t('usage.steps').map((step, i) => (
-            <li key={i}>{step}</li>
+            <li key={i}>{renderTextWithLinks(step)}</li>
           ))}
         </ol>
         <ul className="home__usage-tips">

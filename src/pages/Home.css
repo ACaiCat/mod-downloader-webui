@@ -163,6 +163,16 @@
   line-height: 1.6;
 }
 
+.home__usage-steps a {
+  color: var(--md-sys-color-primary);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.home__usage-steps a:hover {
+  color: var(--md-sys-color-primary);
+}
+
 .home__usage-tips {
   padding-left: 24px;
   margin: 0;

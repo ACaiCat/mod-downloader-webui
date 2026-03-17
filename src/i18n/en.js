@@ -67,7 +67,7 @@ const en = {
   usage: {
     title: 'Usage',
     steps: [
-      'Go to tModLoader Workshop (steamcommunity.com/app/1281930/workshop/) or Terraria Workshop (steamcommunity.com/app/105600/workshop/)',
+      'Go to tModLoader Workshop (https://steamcommunity.com/app/1281930/workshop/)\nor Terraria Workshop (https://steamcommunity.com/app/105600/workshop/)',
       'Search for the mod / resource pack you want',
       'Click into the mod info page (where you can see the green "+ Subscribe" button)',
       'Copy the page link',

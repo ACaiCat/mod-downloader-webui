@@ -67,7 +67,7 @@ const zh = {
   usage: {
     title: '用法',
     steps: [
-      '打开 Steam 创意工坊，例如 tModLoader 或泰拉瑞亚的创意工坊页面',
+      '打开 tModLoader 创意工坊(https://steamcommunity.com/app/1281930/workshop/)\n或泰拉瑞亚创意工坊(https://steamcommunity.com/app/105600/workshop/)',
       '搜索你想要的模组或材质包',
       '点击进入模组详情页（能看到绿色的“订阅”按钮的那个页面）',
       '复制浏览器地址栏里的链接',
