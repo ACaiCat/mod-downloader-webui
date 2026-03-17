@@ -86,10 +86,19 @@ export default function Home() {
       if (result === null) {
         showSnackbar(t('versions.notFound'), 'error')
       } else {
-        const filtered = result
-          .filter(v => v.isDirectory && !v.name.endsWith('.json'))
-          .sort((a, b) => b.name.localeCompare(a.name, undefined, { numeric: true }))
-        setVersions(filtered)
+        // Flat depot: zip present at root → it's a resource pack, no version subdirs
+        const hasZip = result.some(f => !f.isDirectory && f.name.toLowerCase().endsWith('.zip'))
+        if (hasZip) {
+          setSelectedVersion('')
+          setFiles(result)
+        } else {
+          const dirs = result.filter(v => v.isDirectory && !v.name.endsWith('.json'))
+          const looksLikeVersions = dirs.some(v => /^\d/.test(v.name))
+          const sorted = [...dirs].sort((a, b) => looksLikeVersions
+            ? b.name.localeCompare(a.name, undefined, { numeric: true })
+            : a.name.localeCompare(b.name))
+          setVersions(sorted)
+        }
       }
     } catch (err) {
       showSnackbar(t(`error.${classifyError(err)}`), 'error')
@@ -176,7 +185,7 @@ export default function Home() {
       </section>
 
       <section className="home__results">
-        {!selectedVersion ? (
+        {selectedVersion === null ? (
           <VersionList
             versions={versions}
             modId={modId}

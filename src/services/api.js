@@ -98,11 +98,24 @@ export async function getModFiles(modId, version) {
 }
 
 /**
- * Get the download URL for a specific mod file.
- * GET /depots/{id}/{version}/{mod}
+ * Get the download URL for a specific mod file, optionally inside a subfolder path.
  */
-export function getDownloadUrl(modId, version, fileName) {
-  return `${API_BASE}/depots/${encodeURIComponent(modId)}/${encodeURIComponent(version)}/${encodeURIComponent(fileName)}`
+export function getDownloadUrl(modId, version, fileName, subPath = []) {
+  const segments = [modId, version || null, ...subPath, fileName].filter(Boolean).map(encodeURIComponent)
+  return `${API_BASE}/depots/${segments.join('/')}`
+}
+
+/**
+ * List a directory inside a mod version (supports recursive subfolder traversal).
+ * GET /depots/{id}/{version}/{...subPath}/
+ */
+export async function getDirectoryContents(modId, version, subPath = []) {
+  const segments = [modId, version || null, ...subPath].filter(Boolean).map(encodeURIComponent)
+  const res = await fetch(`${API_BASE}/depots/${segments.join('/')}/`)
+  if (res.status === 404) return null
+  if (!res.ok) throw new Error(`HTTP ${res.status}`)
+  const html = await res.text()
+  return parseDirectoryListing(html)
 }
 
 /**

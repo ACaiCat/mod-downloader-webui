@@ -31,11 +31,13 @@ const zh = {
   },
   files: {
     title: '模组文件',
+    titleResourcePack: '资源包',
     name: '文件名',
     size: '大小',
     lastModified: '最后修改',
     download: '下载',
     back: '返回版本列表',
+    backToParent: '返回上级目录',
     empty: '该版本暂无文件',
   },
   error: {

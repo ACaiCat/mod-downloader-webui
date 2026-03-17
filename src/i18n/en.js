@@ -31,11 +31,13 @@ const en = {
   },
   files: {
     title: 'Mod Files',
+    titleResourcePack: 'Resource Pack',
     name: 'File Name',
     size: 'Size',
     lastModified: 'Last Modified',
     download: 'Download',
     back: 'Back to versions',
+    backToParent: 'Back to parent folder',
     empty: 'No files in this version',
   },
   error: {
