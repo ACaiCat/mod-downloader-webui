@@ -1,12 +1,18 @@
 # Trashy Workshop Downloader
 
-垃圾Steam创意工坊模组镜像下载器的前端页面，`https://workshop.755757.xyz`的前端版 (100% AI)
+垃圾Steam创意工坊模组镜像下载器的前端页面，会自动使用当前访问域名下的 API (100% AI)
 
 ## 开发
 
 ```bash
 pnpm install
 pnpm run dev
+```
+
+如需在本地开发时指向其他后端，可设置`VITE_API_BASE`，例如：
+
+```bash
+VITE_API_BASE=https://workshop.755757.xyz pnpm run dev
 ```
 
 ## 构建
@@ -21,8 +27,9 @@ pnpm run build
 
 1. 执行`pnpm run build`生成静态文件
 2. 将`dist/`目录下的所有文件部署到你的 Web服务器
-3. 默认 API 地址为`https://workshop.755757.xyz`，如需修改请编辑 `src/services/api.js`中的`API_BASE`
-4. 如果前端和后端不同域，后端需要配置CORS头
+3. 前端会自动请求当前访问域名下的`/api`和`/depots`
+4. 如需覆盖默认行为，可通过`VITE_API_BASE`指定 API 根地址
+5. 如果后端不和前端部署在同一域名下，推荐在 Web 服务器上将`/api`和`/depots`反向代理到后端服务
 
 ### Nginx 参考配置
 
@@ -36,6 +43,14 @@ server {
 
     location / {
         try_files $uri $uri/ /index.html;
+    }
+
+    location /api/ {
+        proxy_pass http://127.0.0.1:8080/api/;
+    }
+
+    location /depots/ {
+        proxy_pass http://127.0.0.1:8080/depots/;
     }
 }
 ```

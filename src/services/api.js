@@ -3,7 +3,10 @@
  * Extracts name, size, and lastModified from the table rows.
  */
 
-const API_BASE = 'https://workshop.755757.xyz'
+function resolveApiUrl(path) {
+  const base = import.meta.env.VITE_API_BASE?.trim() || globalThis.location?.origin
+  return base ? new URL(path, base).toString() : path
+}
 function parseDirectoryListing(html) {
   const parser = new DOMParser()
   const doc = parser.parseFromString(html, 'text/html')
@@ -42,7 +45,7 @@ function parseDirectoryListing(html) {
  * POST /api/downloader/queue
  */
 export async function submitDownload(urlOrId) {
-  const res = await fetch(`${API_BASE}/api/downloader/queue`, {
+  const res = await fetch(resolveApiUrl('/api/downloader/queue'), {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
@@ -68,7 +71,7 @@ export async function submitDownload(urlOrId) {
  * GET /depots/{id}/
  */
 export async function getModVersions(modId) {
-  const res = await fetch(`${API_BASE}/depots/${encodeURIComponent(modId)}/`)
+  const res = await fetch(resolveApiUrl(`/depots/${encodeURIComponent(modId)}/`))
   if (res.status === 404) {
     return null
   }
@@ -85,7 +88,7 @@ export async function getModVersions(modId) {
  */
 export async function getModFiles(modId, version) {
   const res = await fetch(
-    `${API_BASE}/depots/${encodeURIComponent(modId)}/${encodeURIComponent(version)}/`
+    resolveApiUrl(`/depots/${encodeURIComponent(modId)}/${encodeURIComponent(version)}/`)
   )
   if (res.status === 404) {
     return null
@@ -102,7 +105,7 @@ export async function getModFiles(modId, version) {
  */
 export function getDownloadUrl(modId, version, fileName, subPath = []) {
   const segments = [modId, version || null, ...subPath, fileName].filter(Boolean).map(encodeURIComponent)
-  return `${API_BASE}/depots/${segments.join('/')}`
+  return resolveApiUrl(`/depots/${segments.join('/')}`)
 }
 
 /**
@@ -111,7 +114,7 @@ export function getDownloadUrl(modId, version, fileName, subPath = []) {
  */
 export async function getDirectoryContents(modId, version, subPath = []) {
   const segments = [modId, version || null, ...subPath].filter(Boolean).map(encodeURIComponent)
-  const res = await fetch(`${API_BASE}/depots/${segments.join('/')}/`)
+  const res = await fetch(resolveApiUrl(`/depots/${segments.join('/')}/`))
   if (res.status === 404) return null
   if (!res.ok) throw new Error(`HTTP ${res.status}`)
   const html = await res.text()
@@ -123,7 +126,7 @@ export async function getDirectoryContents(modId, version, subPath = []) {
  * GET /api/downloader/available-free-space
  */
 export async function getStorageInfo() {
-  const res = await fetch(`${API_BASE}/api/downloader/available-free-space`)
+  const res = await fetch(resolveApiUrl('/api/downloader/available-free-space'))
   if (!res.ok) {
     throw new Error(`HTTP ${res.status}`)
   }
